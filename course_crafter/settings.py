@@ -142,7 +142,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'ENFORCE_SCHEMA': False,
-        'NAME': 'mongodb-course-crafter',
+        'NAME': 'mongodb-course-crafter_1',
         'CLIENT': {
             'host': 'localhost',
             'port': 27017,
@@ -202,3 +202,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CORS_ALLOW_ALL_ORIGINS = True       #  TODO --------- PRODUCTION TODO ****************** https://github.com/adamchainz/django-cors-headers
+
+
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']

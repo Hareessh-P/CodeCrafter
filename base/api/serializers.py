@@ -4,7 +4,8 @@ from base.models import User, Course, Topic, Asset
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['username', 'email', 'password']  # Include other fields as needed
+        extra_kwargs = {'password': {'write_only': True}}
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:

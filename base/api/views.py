@@ -10,6 +10,11 @@ from .serializers import UserSerializer, CourseSerializer, TopicSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from django.contrib.auth import authenticate
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -25,8 +30,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+# class MyTokenObtainPairView(TokenObtainPairView):
+#     serializer_class = MyTokenObtainPairSerializer
 
 
 @api_view(['GET'])
@@ -51,6 +56,51 @@ class SignupView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
+# New LoginView
+class LoginView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        
+
+        print(f"Received credentials: username={username}, password={password}, {user}")
+
+
+        if user is not None:
+            # Authentication successful, proceed with token generation
+            # print(f"User authenticated: {user}")
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            response_data = serializer.validated_data
+            return Response(response_data, status=200)
+            # ...
+        else:
+            # Authentication failed
+            print("Authentication failed")
+            return Response({'detail': 'Invalid credentials'}, status=401)
+
+
+# Your existing LogoutView
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh_token')
+
+        if not refresh_token:
+            return Response({'detail': 'refresh_token is required'}, status=400)
+
+        try:
+            # Blacklist the provided refresh token
+            # RefreshToken(refresh_token).blacklist()           TODO ----------------------- BLACKLIST -----------------------------------
+            return Response({'detail': 'Successfully logged out'}, status=200)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=500)
 
 class CreateCourseView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
