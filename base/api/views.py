@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 
 from base.models import User, Course, Topic
-from .serializers import UserSerializer, CourseSerializer, TopicSerializer
+from .serializers import UserSerializer, CourseSerializer, TopicSerializer , MyTokenObtainPairSerializer
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -18,17 +18,21 @@ logger = logging.getLogger(__name__)
 
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
 
-        # Add custom claims
-        token['username'] = user.username
-        # ...
+#         # Add custom claims
+#         token['username'] = user.username
+#         token['role'] = user.profile.role if hasattr(user, 'profile') else 'instructor'  # Assuming the role is stored in a profile model
 
-        return token
+#         # ...
 
+#         return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 # class MyTokenObtainPairView(TokenObtainPairView):
 #     serializer_class = MyTokenObtainPairSerializer
@@ -48,13 +52,26 @@ def getRoutes(request):
 
     return Response(routes)
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
 
 
 class SignupView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Check if the username already exists
+        username = request.data.get('username')
+        if User.objects.filter(username=username).exists():
+            return Response({'detail': 'Username already exists. Please choose another username.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Continue with the user registration
+        response = super().create(request, *args, **kwargs)
+
+        # Customize the response message
+        if response.status_code == status.HTTP_201_CREATED:
+            return Response({'detail': 'User registered successfully.'}, status=status.HTTP_201_CREATED)
+        else:
+            return response
 
 
 # New LoginView
@@ -65,25 +82,24 @@ class LoginView(TokenObtainPairView):
         username = request.data.get('username')
         password = request.data.get('password')
 
-        user = authenticate(request, username=username, password=password)
-        
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user = None
 
-        print(f"Received credentials: username={username}, password={password}, {user}")
-
-
-        if user is not None:
-            # Authentication successful, proceed with token generation
-            # print(f"User authenticated: {user}")
-            serializer = self.get_serializer(data=request.data)
+        if user is not None and user.check_password(password):
+            # Password is correct, proceed with token generation
+            serializer = self.serializer_class(data={"username": username, "password": password})
             serializer.is_valid(raise_exception=True)
             response_data = serializer.validated_data
-            return Response(response_data, status=200)
-            # ...
+
+            # Add additional data to the response
+            response_data['role'] = user.profile.role if hasattr(user, 'profile') else 'instructor'
+            
+            return Response(response_data, status=status.HTTP_200_OK)
         else:
             # Authentication failed
-            print("Authentication failed")
-            return Response({'detail': 'Invalid credentials'}, status=401)
-
+            return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 # Your existing LogoutView
 class LogoutView(APIView):
