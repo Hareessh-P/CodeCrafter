@@ -35,6 +35,8 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, username, password, **extra_fields)
+    
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     user_id = models.AutoField(primary_key=True)
@@ -65,8 +67,8 @@ class Course(models.Model):
     course_name = models.CharField(max_length=255)
     course_description = models.TextField(null=True, blank=True)
     course_thumbnail_url = models.URLField()
-    course_tags = models.JSONField()
-    course_length = models.PositiveIntegerField()
+    course_tags = models.JSONField(default=None, null=True)
+    course_length = models.PositiveIntegerField(default=0)
 
 class Topic(models.Model):
     topic_id = models.AutoField(primary_key=True)
@@ -78,7 +80,25 @@ class Topic(models.Model):
 
 class Asset(models.Model):
     asset_id = models.AutoField(primary_key=True)
+    asset_name = models.CharField(max_length=255)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
     asset_type = models.CharField(max_length=50)
     asset_url = models.URLField()
     asset_length = models.PositiveIntegerField()
     asset_thumbnail = models.URLField()
+
+class BulkUpload(models.Model):
+    STATUS_CHOICES = [
+        ('uploading', 'Uploading'),
+        ('transcoding', 'Transcoding'),
+        ('processed', 'Processed'),
+    ]
+
+    bulk_upload_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
+    bulk_upload_s3_url_temporary = models.URLField()
+    bulk_upload_name = models.CharField(max_length=255)
+    bulk_upload_time_date = models.DateTimeField(auto_now_add=True)
+    bulk_upload_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='uploading')

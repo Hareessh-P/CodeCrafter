@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # 'rest_framework_simplejwt.token_blacklist',
     "corsheaders",
+    'django_extensions', ##########  JUST FOR TESTING PURPOSE TO SHOW API ENDPOINTS CREATED USING -------------> "python manage.py show_urls"
     #
     'django.contrib.admin',
     'django.contrib.auth',
@@ -209,3 +210,18 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 # settings.py
 AUTH_USER_MODEL = 'base.User'
+
+
+
+
+# ##      AWS S3 SETTINGS  
+
+AWS_ACCESS_KEY_ID = 'AKIA5EM5XSEMCRFRBVOW '
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'pjt-media-files-bucket'
+AWS_S3_SIGNATURE_NAME = 's3v4'
+AWS_S3_REGION_NAME = 'us-east-1'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL =  None
+AWS_S3_VERIFY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'        ## NOT NEEDED AS WE ARE NOT STORING THE FILES FROM DJANGO APPLICATION

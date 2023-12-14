@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import User, Course, Topic, Asset
+from base.models import User, Course, Topic, Asset , BulkUpload
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -46,3 +46,17 @@ class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = '__all__'
+
+
+class BulkUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BulkUpload
+        fields = [
+            'bulk_upload_id',
+            'user_id',
+            'course_id',
+            'bulk_upload_s3_url_temporary',
+            'bulk_upload_name',
+            'bulk_upload_time_date',
+            'bulk_upload_status',
+        ]
