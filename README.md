@@ -12,14 +12,15 @@ git clone <my-https-url>
 ```
 ###   Djanog setup and installation
 ```
-pip install django
-pip install djongo
+pip install django==4.1.13
+pip install djongo==1.3.6
 pip install pymongo==3.12.3
-pip install djangorestframework
-pip install django-cors-headers
-pip install djangorestframework-simplejwt
-pip install boto3
-pip install django-extensions
+pip install djangorestframework==3.14.0
+pip install django-cors-headers==4.3.1
+pip install djangorestframework-simplejwt==5.3.1
+pip install boto3==1.33.13
+pip install django-extensions==3.2.3
+
 ```
 
 ###   MongoDB setup in docker
