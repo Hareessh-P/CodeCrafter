@@ -50,29 +50,5 @@ python manage.py runserver
 ![Alt text](https://github.com/Hareessh-P/CodeCrafter/blob/master/design-images/instructor_pov_design.jpeg)
 
 
-# Chess Engine Model Architecture
 
-```mermaid
-graph TD
-  A[Board Representation] --> B[Utilize bitboards for an efficient representation of the chessboard]
-  B --> C[With each piece type having a separate bitboard]
-  A --> D[Move Generation]
-  D --> E[Implement algorithms for generating legal moves]
-  E --> F[Based on the current board state]
-  A --> G[Evaluation Function]
-  G --> H[Develop an evaluation function]
-  H --> I[Assesses the desirability of a given board position]
-  I --> J[Consider factors like piece values, positional advantages, and potential threats]
-  A --> K[Search Algorithm]
-  K --> L[Implement the minimax algorithm with alpha-beta pruning]
-  L --> M[Integrate iterative deepening to gradually increase the search depth]
-  A --> N[Optimization Techniques]
-  N --> O[Integrate various optimization techniques]
-  O --> P[Including transposition tables, quiescence search, move ordering]
-  O --> Q[Parallel search, null move pruning, late move reduction]
-  Q --> R[Futility pruning, and the killer heuristic]
-  A --> S[User Interface (Optional)]
-  S --> T[Include a user interface to allow human interaction]
-  T --> U[Displaying the board and moves]
-```
 
