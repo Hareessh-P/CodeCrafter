@@ -74,5 +74,5 @@ graph TD
   A --> S[User Interface (Optional)]
   S --> T[Include a user interface to allow human interaction]
   T --> U[Displaying the board and moves]
-
+```
 
