@@ -1,5 +1,9 @@
 ## Django project Set-up :
 
+## Backend Design
+![Alt text](https://github.com/Hareessh-P/CodeCrafter/blob/master/design-images/instructor_pov_design.jpeg)
+
+
 ###   Python virtual environment setup
 ```
 python -m venv env
@@ -46,8 +50,7 @@ python manage.py migrate
 ```
 python manage.py runserver
 ```
-## Backend Design
-![Alt text](https://github.com/Hareessh-P/CodeCrafter/blob/master/design-images/instructor_pov_design.jpeg)
+
 
 
 
